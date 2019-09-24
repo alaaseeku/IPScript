@@ -63,7 +63,7 @@ echo "Enter the CUCM IP Address :"
 read cucmIP
 
 while ! valid_ip $cucmIP
-Hamza Abusalah
+
 do
    echo "Bad STUN IP Address"
 echo "Please Re-Enter the CUCM IP address :"
