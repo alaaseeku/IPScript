@@ -163,3 +163,7 @@ if ! [ "$ps1" = 'q' ] ; then
 sed -i "s+secret=.*+secret=$ps1+g"  "/etc/asterisk/sip.conf"
 fi
 fi
+service asterisk stop
+service asterisk start
+service kurento-media-server stop
+ service kurento-media-server start
