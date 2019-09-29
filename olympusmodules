@@ -17,6 +17,24 @@ function valid_ip()
     return $stat
 }
 
+
+#########################################################################################
+function port_is_ok() {
+    local port="$1"
+	
+    local -i port_num=$(to_int "${port}" 2>/dev/null)
+   	
+		
+    if (( $port_num < 1 || $port_num > 65535 )) ; then
+       return 1 
+    else
+	return 0
+	fi
+}
+function to_int {
+    local -i num="10#${1}"
+    echo "${num}"
+}
 #########################################################################################
 AllFile=true
 
@@ -95,8 +113,15 @@ fi
 echo "Enter the STUN Port number - or enter q to skip :"
 read stunprt
 if ! [ "$stunprt" = 'q' ] ; then
+while ! port_is_ok $stunprt ; do
+echo "STUN Port number is not Valid !!"
+echo "Enter a Valid STUN Port number:"
+read stunprt
+done
+
 sed -i "s+;stunServerPort=<Port>+stunServerPort=$stunprt+g" "/etc/kurento/modules/kurento/WebRtcEndpoint.conf.ini"
 sed -i "s+stunServerPort=.*+stunServerPort=$stunprt+g" "/etc/kurento/modules/kurento/WebRtcEndpoint.conf.ini"
+
 fi
 ##############################################################################################
 echo "Enter the CUCM IP Address - or enter q to skip :"
@@ -105,14 +130,14 @@ if ! [ "$cucmIP" = 'q' ] ; then
 while ! valid_ip $cucmIP
 
 do
-   echo "Bad STUN IP Address"
+   echo "Bad CUCM IP Address"
 echo "Please Re-Enter the CUCM IP address  :"
 read cucmIP
 done
 
 if valid_ip $cucmIP
 then
-sed -i "s+host=.*+host=$cucmIP+g" "/etc/asterisk/sip.conf"
+sed -i "s+^host=[0-9].*+host=$cucmIP+g" "/etc/asterisk/sip.conf"
 else echo "Bad CUCM IP Address"
 fi
 fi
@@ -122,6 +147,11 @@ fi
 echo "Enter the CUCM Port - or enter q to skip :"
 read cucmprt
 if ! [ "$cucmprt" = 'q' ] ; then
+while ! port_is_ok $cucmprt ; do
+echo "CUCM Port number is not Valid !!"
+echo "Enter a Valid CUCM Port number:"
+read cucmprt
+done
 sed -i "s+\bport\b=.*+port=$cucmprt+g" "/etc/asterisk/sip.conf"
 fi
 #############################################################################################
