@@ -160,6 +160,13 @@ echo "Enter the full path for crt file - or enter q to skip:"
 read crt
 if ! [ "$crt" = 'q' ] ; then
 
+
+while ! [ -f "$crt" ]; do
+    echo "$crt does not exist , Please enter a valid crt file !!"
+    read crt
+done
+
+
 #if ! [ -f "$crt" ]; then
 #    echo "$crt does not exist"
 #else
@@ -171,6 +178,12 @@ fi
 echo "Enter the full path for key file - or enter q to skip:"
 read crt1
 if ! [ "$crt1" = 'q' ] ; then
+
+while ! [ -f "$crt1" ]; do
+    echo "$crt1 does not exist , Please enter a valid key file !!"
+    read crt1
+done
+
 sed -i "s+tlsprivatekey=.*+tlsprivatekey=$crt1+g" "/etc/asterisk/http.conf"
 sed -i "s+dtlsprivatekey=.*+dtlsprivatekey=$crt1+g"  "/etc/asterisk/sip.conf"
 fi
